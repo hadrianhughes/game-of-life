@@ -24,6 +24,14 @@ let lastYPos = 0;
 
 let grid = [];
 
+const FRAME_RATE = 2;
+let playing = false;
+
+const togglePlaying = () => {
+  playing = !playing;
+  buttons.play.innerHTML = playing ? 'Stop' : 'Play';
+};
+
 const handleMouse = (e, down, callback = () => {}) => {
   if (!down) isMouseBlocked = false;
 
@@ -71,7 +79,14 @@ const step = () => {
   grid = newGrid;
 };
 
+let lastTime = Date.now();
 const update = () => {
+  const newTime = Date.now();
+  if (playing && newTime - lastTime >= 1000 / FRAME_RATE) {
+    step();
+    lastTime = newTime;
+  }
+
   const xPos = Math.floor(mouseX / TILE_SIZE);
   const yPos = Math.floor(mouseY / TILE_SIZE);
   const isSamePos = xPos === lastXPos && yPos === lastYPos;
@@ -116,6 +131,7 @@ canvas.addEventListener('mousemove', setMouseLocation);
 
 buttons.reset.addEventListener('click', initGridWithSize);
 buttons.step.addEventListener('click', step);
+buttons.play.addEventListener('click', togglePlaying);
 
 initGridWithSize();
 loop();
