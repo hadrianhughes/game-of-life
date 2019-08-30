@@ -41,6 +41,36 @@ const initGrid = (width, height) => {
   grid.fill(0);
 };
 
+const step = () => {
+  const newGrid = grid.slice();
+
+  for (let i = 0;i < GRID_HEIGHT;i += 1) {
+    for (let j = 0;j < GRID_WIDTH;j += 1) {
+      const atTop = i === 0;
+      const atBottom = i === GRID_HEIGHT - 1;
+      const atLeft = j % GRID_WIDTH === 0;
+      const atRight = (j + 1) % GRID_WIDTH === 0;
+
+      let neighbourCount = 0;
+
+      if (!atLeft) neighbourCount += grid[(j - 1) + (i * GRID_WIDTH)];
+      if (!atRight) neighbourCount += grid[(j + 1) + (i * GRID_WIDTH)];
+      if (!atTop) neighbourCount += grid[j + ((i - 1) * GRID_WIDTH)];
+      if (!atBottom) neighbourCount += grid[j + ((i + 1) * GRID_WIDTH)];
+
+      if (!atLeft && !atBottom) neighbourCount += grid[(j - 1) + ((i + 1) * GRID_WIDTH)];
+      if (!atLeft && !atTop) neighbourCount += grid[(j - 1) + ((i - 1) * GRID_WIDTH)];
+      if (!atRight && !atBottom) neighbourCount += grid[(j + 1) + ((i + 1) * GRID_WIDTH)];
+      if (!atRight && !atTop) neighbourCount += grid[(j + 1) + ((i - 1) * GRID_WIDTH)];
+
+      if (neighbourCount < 2 || neighbourCount > 3) newGrid[j + (i * GRID_WIDTH)] = 0;
+      if (neighbourCount === 3) newGrid[j + (i * GRID_WIDTH)] = 1;
+    }
+  }
+
+  grid = newGrid;
+};
+
 const update = () => {
   const xPos = Math.floor(mouseX / TILE_SIZE);
   const yPos = Math.floor(mouseY / TILE_SIZE);
@@ -85,6 +115,7 @@ canvas.addEventListener('mouseup', e => handleMouseAndSetLocation(e, false));
 canvas.addEventListener('mousemove', setMouseLocation);
 
 buttons.reset.addEventListener('click', initGridWithSize);
+buttons.step.addEventListener('click', step);
 
 initGridWithSize();
 loop();
