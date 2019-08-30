@@ -33,6 +33,7 @@ let fast = false;
 const togglePlaying = () => {
   playing = !playing;
   buttons.play.innerHTML = playing ? 'Stop' : 'Play';
+  buttons.step.disabled = playing;
 };
 
 const setSpeed = () => {
