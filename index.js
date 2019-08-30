@@ -4,11 +4,12 @@ const ctx = canvas.getContext('2d');
 const buttons = {
   reset: document.getElementById('js-btn-reset'),
   step: document.getElementById('js-btn-step'),
-  play: document.getElementById('js-btn-play')
+  play: document.getElementById('js-btn-play'),
+  speed: document.getElementById('js-btn-speed')
 };
 
 const GRID_HEIGHT = 75;
-const GRID_WIDTH = 200;
+const GRID_WIDTH = 100;
 const TILE_SIZE = 10;
 const CANVAS_WIDTH = GRID_WIDTH * TILE_SIZE;
 const CANVAS_HEIGHT = GRID_HEIGHT * TILE_SIZE;
@@ -25,11 +26,18 @@ let lastYPos = 0;
 let grid = [];
 
 const FRAME_RATE = 2;
+const FAST_FRAME_RATE = 10;
 let playing = false;
+let fast = false;
 
 const togglePlaying = () => {
   playing = !playing;
   buttons.play.innerHTML = playing ? 'Stop' : 'Play';
+};
+
+const setSpeed = () => {
+  fast = !fast;
+  buttons.speed.innerHTML = fast ? 'Slow' : 'Fast';
 };
 
 const handleMouse = (e, down, callback = () => {}) => {
@@ -82,7 +90,9 @@ const step = () => {
 let lastTime = Date.now();
 const update = () => {
   const newTime = Date.now();
-  if (playing && newTime - lastTime >= 1000 / FRAME_RATE) {
+
+  const frameRate = fast ? FAST_FRAME_RATE : FRAME_RATE;
+  if (playing && newTime - lastTime >= 1000 / frameRate) {
     step();
     lastTime = newTime;
   }
@@ -132,6 +142,7 @@ canvas.addEventListener('mousemove', setMouseLocation);
 buttons.reset.addEventListener('click', initGridWithSize);
 buttons.step.addEventListener('click', step);
 buttons.play.addEventListener('click', togglePlaying);
+buttons.speed.addEventListener('click', setSpeed);
 
 initGridWithSize();
 loop();
