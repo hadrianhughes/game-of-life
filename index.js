@@ -1,6 +1,12 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
+const buttons = {
+  reset: document.getElementById('js-btn-reset'),
+  step: document.getElementById('js-btn-step'),
+  play: document.getElementById('js-btn-play')
+};
+
 const GRID_HEIGHT = 75;
 const GRID_WIDTH = 200;
 const TILE_SIZE = 10;
@@ -16,6 +22,8 @@ let isMouseBlocked = false;
 let lastXPos = 0;
 let lastYPos = 0;
 
+let grid = [];
+
 const handleMouse = (e, down, callback = () => {}) => {
   if (!down) isMouseBlocked = false;
 
@@ -29,12 +37,11 @@ const setMouseLocation = e => {
 };
 
 const initGrid = (width, height) => {
-  const grid = new Array(width * height);
+  grid = new Array(width * height);
   grid.fill(0);
-  return grid;
 };
 
-const update = grid => {
+const update = () => {
   const xPos = Math.floor(mouseX / TILE_SIZE);
   const yPos = Math.floor(mouseY / TILE_SIZE);
   const isSamePos = xPos === lastXPos && yPos === lastYPos;
@@ -51,7 +58,7 @@ const update = grid => {
   }
 };
 
-const render = grid => {
+const render = () => {
   canvas.width = CANVAS_WIDTH;
 
   for (let i = 0;i < GRID_HEIGHT;i += 1) {
@@ -62,20 +69,22 @@ const render = grid => {
   }
 };
 
-const loop = (fnRender, fnUpdate, grid) => {
-  fnRender(grid);
-  fnUpdate(grid);
+const loop = () => {
+  render();
+  update();
 
-  requestAnimationFrame(() => loop(fnRender, fnUpdate, grid));
+  requestAnimationFrame(loop);
 };
 
-const grid = initGrid(GRID_WIDTH, GRID_HEIGHT);
-
+const initGridWithSize = () => initGrid(GRID_WIDTH, GRID_HEIGHT);
 const handleMouseAndSetLocation = (e, down) => handleMouse(e, down, setMouseLocation);
-const renderWithGrid = () => render(grid);
+const renderWithGrid = () => render();
 
 canvas.addEventListener('mousedown', e => handleMouseAndSetLocation(e, true));
 canvas.addEventListener('mouseup', e => handleMouseAndSetLocation(e, false));
 canvas.addEventListener('mousemove', setMouseLocation);
 
-loop(render, update, grid);
+buttons.reset.addEventListener('click', initGridWithSize);
+
+initGridWithSize();
+loop();
