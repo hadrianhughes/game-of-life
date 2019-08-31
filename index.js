@@ -112,6 +112,8 @@ const update = () => {
       isMouseBlocked = true;
     }
   }
+
+  if (playing && grid.every(x => x === 0)) togglePlaying();
 };
 
 const render = () => {

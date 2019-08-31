@@ -12,7 +12,14 @@
     <button class="ui-button" id="js-btn-step">Step</button>
     <button class="ui-button" id="js-btn-play">Play</button>
     <button id="js-btn-speed" class="ui-button">Fast</button>
+    <span>Draw on the canvas above</span>
   </div>
+  <ul>
+    <li>Any live cell with fewer than two live neighbours dies, as if by underpopulation.</li>
+    <li>Any live cell with two or three live neighbours lives on to the next generation.</li>
+    <li>Any live cell with more than three live neighbours dies, as if by overpopulation.</li>
+    <li>Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</li>
+  </ul>
   <script src="index.js"></script>
 </body>
 </html>
